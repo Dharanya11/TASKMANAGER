@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 
 const Action = (props) => {
-  const [startDate, setStartDate] = useState(props.selectedTask.startDate || "");
-  const [endDate, setEndDate] = useState(props.selectedTask.endDate || "");
+  if (!props.selectedTask) return null; // ✅ Don't render if no task is selected
+
+  const [startDate, setStartDate] = useState(props.selectedTask?.startDate || "");
+  const [endDate, setEndDate] = useState(props.selectedTask?.endDate || "");
 
   useEffect(() => {
-    setStartDate(props.selectedTask.startDate || "");
-    setEndDate(props.selectedTask.endDate || "");
+    setStartDate(props.selectedTask?.startDate || "");
+    setEndDate(props.selectedTask?.endDate || "");
   }, [props.selectedTask]);
 
   const setTodayTomorrow = () => {
@@ -27,6 +29,7 @@ const Action = (props) => {
 
   return (
     <div className="mt-2 space-y-2">
+      {/* Start Date */}
       <div>
         <label className="mr-2">Start:</label>
         <input
@@ -37,6 +40,8 @@ const Action = (props) => {
           className="border rounded p-1"
         />
       </div>
+
+      {/* End Date */}
       <div>
         <label className="mr-2">End:</label>
         <input
@@ -47,6 +52,8 @@ const Action = (props) => {
           className="border rounded p-1"
         />
       </div>
+
+      {/* Quick Actions */}
       <button className="btn btn-secondary" onClick={setTodayTomorrow}>
         Set Today → Tomorrow
       </button>
@@ -73,10 +80,9 @@ const Action = (props) => {
         <button
           className="btn btn-success"
           onClick={() => {
-            window.alert(
-              `Press Sure Wan't Delete ${props.priority} Priority Task`
-            );
-            props.handleDeleteTask();
+            if (window.confirm(`Are you sure you want to delete this ${props.priority} priority task?`)) {
+              props.handleDeleteTask();
+            }
           }}
         >
           Delete
